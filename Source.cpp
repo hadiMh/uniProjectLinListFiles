@@ -50,6 +50,7 @@ void printInStudentsFile(char stuNum[7], char* firstName, char* lastName)
 	fclose(fileName);
 }
 
+/* This function create a linkList of students from the 'students.txt' file and returns the 'Cell* head' of the link list */
 Cell* createLinkListOfStudentsFile()
 {
 	Cell * head, *current, *newCell;
@@ -240,6 +241,58 @@ Cell* createLinkListOfStudentsFile()
 	return head;
 }
 
+/* This function gets a 'CharCell*' and follow it's link list to print the string in the 'FILE* fileName' that has passed to it. */
+void printThisStringLinkList(CharCell* headChar, FILE* fileName)
+{
+	for (CharCell* i = headChar; i != NULL; i = i->nextCharCell)
+	{
+		fprintf(fileName, "%c", i->x);
+	}
+}
+
+/* This function gets the 'Cell*' link list head and prints it row by row in the 'students.txt' file. */
+void printStudentLinkListInStudentsFile(Cell* head)
+{
+	FILE* fileName = fopen("students.txt", "w");
+	for (Cell* i = head; i != NULL; i = i->nextPtr)
+	{
+		fprintf(fileName, "%s ", i->stuData.stuNum);
+		printThisStringLinkList(i->stuData.firstName, fileName);
+		fprintf(fileName, "%c", ' ');
+		printThisStringLinkList(i->stuData.lastName, fileName);
+		fprintf(fileName, "%c", ' ');
+		fprintf(fileName, "%f", i->stuData.avg);
+		fprintf(fileName, "%c", ' ');
+		fprintf(fileName, "%d", i->stuData.unitsSum);
+		fprintf(fileName, "%c", ' ');
+		printThisStringLinkList(i->stuData.passedLessons, fileName);
+		fprintf(fileName, "%c", '\n');
+	}
+	fclose(fileName);
+}
+
+/* This function add a new student data to the end of the link list of the students */
+/*void addToTheEndOfStudentsLinkList(Cell* head, char stuNum[7], char* firstName, char* lastName)
+{
+	Cell* lastCell, * newCell;
+	for (Cell* i = head; i != NULL; i = i->nextPtr)
+		lastCell = i;
+	newCell = (Cell*)malloc(sizeof(Cell));
+	newCell->nextPtr = NULL;
+	newCell->stuData = cellDataToAdd;
+	lastCell->nextPtr = newCell;
+}*/
+
+void clearThisStudentsLinkListFromStack(Cell* head)
+{
+	Cell* nextCellPtr;
+	for (Cell* i = head; i != NULL; i = nextCellPtr)
+	{
+		nextCellPtr = i->nextPtr;
+		free(i);
+	}
+}
+
 int main()
 {
 	createStudentFile();
@@ -247,5 +300,8 @@ int main()
 	printInStudentsFile("234567", "reza", "hajhosseini");
 	printInStudentsFile("345678", "peyman", "hosseini");
 	Cell* head = createLinkListOfStudentsFile();
-	cout << head->stuData.stuNum << endl << head->stuData.avg << endl << head->stuData.unitsSum << endl;
+	clearThisStudentsLinkListFromStack(head);
+	printInStudentsFile("456789", "mehdi", "dehghan");
+	head = createLinkListOfStudentsFile();
+	//printStudentLinkListInStudentsFile(head);
 }
